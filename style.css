@@ -1,0 +1,15 @@
+body {
+  text-align: center;
+}
+form {
+  display: inline-block;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td {
+  border: 1px solid black;
+  height: 40px;
+}

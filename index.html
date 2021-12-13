@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <title></title>
+  </head>
+  <body text-align="center">
+    <div id="app" class="container">
+      <h1> Nuvem </h1>
+
+       <form class="form-group">
+
+        <label class="teste">Nome: </label>
+        <input type="text" id="nome" name="nome" v-model="dados.nome"></br> 
+        <label>Email: </label>
+        <input type="email" name="" id="email" name="email" v-model="dados.email"></br>
+        <label>Data: </label>
+        <input type="date" name="" id="date" name="date" v-model="dados.datanasc"></br>
+
+        <input type="checkbox" name="processing" id="micro" v-model="services.pmicro"> Processing - 1 micro - $ 1,00 per hour</br>
+        <input type="checkbox" name="processing" id="medium" v-model="services.pmedium"> Processing - 1 medium - $ 2,00 per hour</br>
+        <input type="checkbox" name="processing" id="large" v-model="services.plarge"> Processing - 1 large - $ 10,00 per hour</br>
+
+        <input type="checkbox" name="storage" id="storage-op1" v-model="services.sdezgb"> Storage - 10 GB  HD - $ 0,5 per hour</br>
+        <input type="checkbox" name="storage" id="storage-op2" v-model="services.sumtb"> Storage - 1 TB  HD - $ 1,0 per hour</br>
+        <input type="checkbox" name="storage"  id="storage-op3" v-model="services.scemssd"> Storage - 100 GB  SSD - $ 5,0 per hour</br>
+
+        <input type="reset" class="btn btn-danger" value="Clear">
+        <input  type="submit" class="btn btn-primary"  value="ADD"  v-on:click.prevent="adicionarNaTabela">
+      
+      </form>
+
+      <div id="tbInformacoes">
+        <table id="tabela" class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>E-mail</th>
+              <th>Date of Birth</th>
+              <th>Services</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="dado in dados">
+              <td>{{dado.nome}}</td>
+              <td>{{ dado.email }}</td>
+              <td>{{ dado.datanasc }}</td>
+              <td>{{dado.service}}</td>
+              <td>{{dado.total}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <script>
+      var App = new Vue({
+        el: "#app",
+        data: {
+          maiorDeIdade: false,
+          dados: [
+            {
+              nome: "",
+              email: "",
+              datanasc: "",
+              service: " ",
+              total: ""
+            },
+          ],
+          services: [
+            {
+              pmicro: "",
+              pmedium: "",
+              plarge: "",
+
+              sdezgb: "",
+              sumtb: "",
+              scemssd: ""
+          }
+        ]
+        },
+        methods: {
+          adicionarNaTabela: function () {
+            console.log(this.validarIdade())
+           if (this.validarIdade()) {
+              this.addServices()
+              this.dados.push({
+              nome: this.dados.nome,
+              email: this.dados.email,
+              datanasc: this.dados.datanasc,
+              service: this.dados.service,
+              total: this.dados.total
+            })
+            localStorage.setItem('nome', this.dados.nome);
+            localStorage.setItem('email', this.dados.email);
+            localStorage.setItem('data nascimento', this.dados.datanasc);
+            localStorage.setItem('service', this.dados.service);
+            localStorage.setItem('total', this.dados.total);
+           } else {
+             alert("Voce é menor de idade")
+           }
+          }, 
+          addServices: function() {
+            this.dados.service = "";
+            this.dados.total = 0.00
+
+            if (this.services.sdezgb) {
+              this.dados.service = this.dados.service + "Storage - 10 GB  HD - $ 0,5 per hour ";
+              this.dados.total += 0.5;
+            } 
+            if (this.services.sumtb) {
+              this.dados.service = this.dados.service + "Storage - 1 TB  HD - $ 1,0 per hour"
+              this.dados.total += 1.0;
+            }
+            if (this.services.scemssd) {
+              this.dados.service = this.dados.service + "Storage - 100 GB  SSD - $ 5,0 per hour"
+              this.dados.total += 5.0
+            }
+            if (this.services.pmicro) {
+              this.dados.service = this.dados.service + "Processing - 1 micro - $ 1,00 per hour ";
+              this.dados.total += 1.0;
+            } 
+            if (this.services.pmedium) {
+              this.dados.service += "Processing - 1 medium - $ 2,00 per hour"
+              this.dados.total += 2.0;
+            }
+            if (this.services.plarge) {
+              this.dados.service += "Processing - 1 large - $ 10,00 per hour"
+              this.dados.total += 10.0;
+            }
+
+
+            return this.dados.service;
+          }, 
+          validarIdade: function() {
+            var dataNascimento = new Date(this.dados.datanasc)
+            var dataHoje = new Date();
+
+            if ((dataHoje.getFullYear() - dataNascimento.getFullYear()) >= 18) {
+              if (dataHoje.getMonth() < dataNascimento.getMonth()) {
+                return false;
+              } else if (dataHoje.getMonth() == dataNascimento.getMonth() && dataHoje.getDate() <= dataNascimento.getDate()) {
+                return false;
+              } else{
+                return true;
+              }
+            } else {
+              return false;
+            }
+          }
+        },
+      });
+    </script>
+  </body>
+</html>
